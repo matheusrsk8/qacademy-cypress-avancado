@@ -101,7 +101,7 @@ describe('Sign Up', function () {
         })
     })
 
-    context.only('When i dont fill required field', function () {
+    context('When i dont fill required field', function () {
 
         const alertMessage = [
             'Nome é obrigatório',
