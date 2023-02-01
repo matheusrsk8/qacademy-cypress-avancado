@@ -1,7 +1,7 @@
 import header from '../../components/header'
 import { el } from './elements'
 
-class dashPage {
+class DashPage {
 
     constructor(){
         this.header = header;
@@ -9,4 +9,4 @@ class dashPage {
     
 }
 
-export default new dashPage()
+export default new DashPage()

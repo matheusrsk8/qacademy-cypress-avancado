@@ -29,7 +29,7 @@ describe('Sign Up', function () {
 
     context('When the barber has already registered', function () {
 
-        const barber = {
+        const user = {
             name: 'Matheus Rocha',
             email: 'registered@email.com',
             password: 'pwd123',
@@ -37,23 +37,13 @@ describe('Sign Up', function () {
         }
 
         before(function () {
-
-            cy.task('removeUser', barber.email)
-                .then(function (result) {
-                    cy.log(result);
-                })
-
-            cy.request(
-                'POST',
-                'http://localhost:3333/users',
-                barber
-            )
+            cy.postUser(user)
         })
 
         it('Then, should not sign up the barber', function () {
 
             signupPage.go();
-            signupPage.form(barber);
+            signupPage.form(user);
             signupPage.submit();
             signupPage.toast.shouldHaveText('Email já cadastrado para outro usuário.');
         })
