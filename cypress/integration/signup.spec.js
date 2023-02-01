@@ -3,17 +3,22 @@ import signupPage from '../support/pages/signup'
 
 describe('Sign Up', function () {
 
+    before(function(){
+        cy.fixture('signup').then(function(signup){
+            this.success = signup.success
+            this.email_inv = signup.email_inv
+            this.email_dup = signup.email_dup
+            this.short_password = signup.short_password
+        })
+    })
+
+
     context('When the barber is new', function () {
 
-        const barber = {
-            name: 'Matheus Rocha',
-            email: 'new@email.com',
-            password: 'pwd123'
-        }
 
         before(function () {
             //Removendo usuário do banco antes de visitar a página
-            cy.task('removeUser', barber.email)
+            cy.task('removeUser', this.success.email)
                 .then(function (result) {
                     console.log(result);
                 })
@@ -21,7 +26,7 @@ describe('Sign Up', function () {
 
         it('Then, should sign up a new barber', function () {
             signupPage.go();
-            signupPage.form(barber);
+            signupPage.form(this.success);
             signupPage.submit();
             signupPage.toast.shouldHaveText('Agora você se tornou um(a) Samurai, faça seu login para ver seus agendamentos!');
         })
@@ -29,21 +34,15 @@ describe('Sign Up', function () {
 
     context('When the barber has already registered', function () {
 
-        const user = {
-            name: 'Matheus Rocha',
-            email: 'registered@email.com',
-            password: 'pwd123',
-            is_provider: true
-        }
-
+     
         before(function () {
-            cy.postUser(user)
+            cy.postUser(this.email_dup)
         })
 
         it('Then, should not sign up the barber', function () {
 
             signupPage.go();
-            signupPage.form(user);
+            signupPage.form(this.email_dup);
             signupPage.submit();
             signupPage.toast.shouldHaveText('Email já cadastrado para outro usuário.');
         })
@@ -51,17 +50,11 @@ describe('Sign Up', function () {
 
     context('When email is incorrect', function () {
 
-        const barber = {
-            name: 'Matheus Rocha',
-            email: 'matheus.example.com',
-            password: 'pwd123'
-        }
-
         it('Should display alert error', function () {
             signupPage.go();
-            signupPage.form(barber);
+            signupPage.form(this.email_inv);
             signupPage.submit();
-            signupPage.alertHaveText('Informe um email válido')
+            signupPage.alert.haveText('Informe um email válido')
 
         })
 
@@ -77,16 +70,13 @@ describe('Sign Up', function () {
 
         passwords.forEach(function (p) {
 
-            const barber = {
-                name: 'Matheus Rocha',
-                email: 'matheus@example.com',
-                password: p
-            }
-
             it('Should deny the pass: ' + p, function () {
-                signupPage.form(barber);
+
+                this.short_password.password = p
+
+                signupPage.form(this.short_password);
                 signupPage.submit();
-                signupPage.alertHaveText('Pelo menos 6 caracteres')
+                signupPage.alert.haveText('Pelo menos 6 caracteres')
             })
         })
     })
@@ -106,7 +96,7 @@ describe('Sign Up', function () {
 
         alertMessage.forEach(function (alert) {
             it('Should display message: ' + alert, function () {
-                signupPage.alertHaveText(alert)
+                signupPage.alert.haveText(alert)
             })
         })
     })

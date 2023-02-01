@@ -1,0 +1,25 @@
+{
+    "success": {
+        "name": "Matheus Rocha",
+        "email": "new@email.com",
+        "password": "pwd123"
+    },
+    "email_dup": {
+        "name": "Matheus Rocha",
+        "email": "registered@email.com",
+        "password": "pwd123",
+        "is_provider": true
+    },
+    "email_inv": {
+        "name": "Matheus Rocha",
+        "email": "matheus.example.com",
+        "password": "pwd123",
+        "is_provider": true 
+    },
+    "short_password": {
+        "name": "Matheus Rocha",
+        "email": "matheus@example.com",
+        "password": null
+    }
+}
+

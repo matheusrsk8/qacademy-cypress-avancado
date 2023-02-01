@@ -1,6 +1,13 @@
 import { el } from './elements'
+import toast from '../../components/toast'
+import alert from '../../components/alert'
 
 class loginPage {
+
+    constructor() {
+        this.toast = toast;
+        this.alert = alert;
+    }
 
     go(){
         cy.visit('/');
@@ -14,11 +21,6 @@ class loginPage {
     submit(){
         cy.contains(el.signin)
             .click();
-    }
-
-    alertHaveText(expectedMessage){
-        cy.contains(el.alertError, expectedMessage)
-            .should('be.visible')
     }
 
 }

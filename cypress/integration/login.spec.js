@@ -64,7 +64,7 @@ describe('login', function () {
         })
     })
 
-    context.only('When email format is incorrect', function () {
+    context('When email format is incorrect', function () {
 
         const emails = [
             '@gmail.com',
@@ -85,7 +85,7 @@ describe('login', function () {
 
                 loginPage.form(user)
                 loginPage.submit()
-                loginPage.alertHaveText('Informe um email válido')
+                loginPage.alert.haveText('Informe um email válido')
 
             })
 
