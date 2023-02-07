@@ -24,6 +24,8 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+import moment from 'moment'
+
 Cypress.Commands.add('postUser', function (user) {
     //Removendo usuário do banco antes de visitar a página
     cy.task('removeUser', user.email)
@@ -54,5 +56,71 @@ Cypress.Commands.add('postRecoveryPass', function(email){
                 Cypress.env('recoveryToken', result.token)
             })
 
+    })
+})
+
+Cypress.Commands.add('createAppointment', function(hour){
+
+    let now = new Date()
+    now.setDate(now.getDate() +1)
+
+    const date = moment(now).format('YYYY-MM-DD '+ hour + ':00')
+
+    Cypress.env('appointmentDay', now.getDate())
+
+    const payload = {
+        provider_id: Cypress.env('providerId'),
+        date: date
+    }
+
+    cy.request({
+        method: 'POST',
+        url: 'http://localhost:3333/appointments',
+        body: payload,
+        headers: {
+            authorization: 'Bearer ' + Cypress.env('tokenApi')
+        }
+    }).then(function (response) {
+        expect(response.status).to.eq(200)
+    })
+
+})
+
+
+Cypress.Commands.add('setProviderId', function(email){
+
+    cy.request({
+        method: 'GET',
+        url: 'http://localhost:3333/providers',
+        headers: {
+            authorization: 'Bearer ' + Cypress.env('tokenApi')
+        }       
+    }).then(function (response) {
+        expect(response.status).to.eq(200)
+
+        const providersList = response.body
+
+        providersList.forEach(function(provider){
+            if(provider.email === email) {
+                Cypress.env('providerId', provider.id)  
+            }
+        })
+    })
+})
+
+Cypress.Commands.add('apiUserLogin', function(user){
+
+    const payload = {
+        email: user.email,
+        password: user.password
+    }
+
+    cy.request({
+        method: 'POST',
+        url: 'http://localhost:3333/sessions',
+        body: payload
+    }).then(function (response) {
+        expect(response.status).to.eq(200)
+        Cypress.env('tokenApi', response.body.token)
     })
 })
