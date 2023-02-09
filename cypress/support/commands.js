@@ -24,7 +24,19 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
+
+import {apiServer} from '../../cypress.json'
 import moment from 'moment'
+import loginPage from './pages/login'
+import dashPage from './pages/dashboard'
+
+//App Action
+Cypress.Commands.add('uiLogin', function(user){
+    loginPage.go();
+    loginPage.form(user);
+    loginPage.submit();
+    dashPage.header.userLoggedIn(user);
+})
 
 Cypress.Commands.add('postUser', function (user) {
     //Removendo usuário do banco antes de visitar a página
@@ -35,7 +47,7 @@ Cypress.Commands.add('postUser', function (user) {
 
     cy.request(
         'POST',
-        'http://localhost:3333/users',
+        apiServer+'/users',
         user
     ).then(function (response) {
         expect(response.status).to.eq(200)
@@ -45,7 +57,7 @@ Cypress.Commands.add('postUser', function (user) {
 Cypress.Commands.add('postRecoveryPass', function(email){
     cy.request({
         method: 'POST',
-        url: 'http://localhost:3333/password/forgot',
+        url: apiServer+'/password/forgot',
         body: { email: email }
     }).then(function (response) {
         expect(response.status).to.eq(204)
@@ -64,9 +76,9 @@ Cypress.Commands.add('createAppointment', function(hour){
     let now = new Date()
     now.setDate(now.getDate() +1)
 
-    const date = moment(now).format('YYYY-MM-DD '+ hour + ':00')
+    const date = moment(now).format(`YYYY-MM-DD ${hour}:00`)
 
-    Cypress.env('appointmentDay', now.getDate())
+    Cypress.env('appointmentDate', now)
 
     const payload = {
         provider_id: Cypress.env('providerId'),
@@ -75,7 +87,7 @@ Cypress.Commands.add('createAppointment', function(hour){
 
     cy.request({
         method: 'POST',
-        url: 'http://localhost:3333/appointments',
+        url: apiServer+'/appointments',
         body: payload,
         headers: {
             authorization: 'Bearer ' + Cypress.env('tokenApi')
@@ -91,7 +103,7 @@ Cypress.Commands.add('setProviderId', function(email){
 
     cy.request({
         method: 'GET',
-        url: 'http://localhost:3333/providers',
+        url: apiServer+'/providers',
         headers: {
             authorization: 'Bearer ' + Cypress.env('tokenApi')
         }       
@@ -108,7 +120,7 @@ Cypress.Commands.add('setProviderId', function(email){
     })
 })
 
-Cypress.Commands.add('apiUserLogin', function(user){
+Cypress.Commands.add('apiUserLogin', function(user, localStorage = false){
 
     const payload = {
         email: user.email,
@@ -117,10 +129,22 @@ Cypress.Commands.add('apiUserLogin', function(user){
 
     cy.request({
         method: 'POST',
-        url: 'http://localhost:3333/sessions',
+        url: apiServer+ '/sessions',
         body: payload
     }).then(function (response) {
         expect(response.status).to.eq(200)
         Cypress.env('tokenApi', response.body.token)
+
+        const {token, user} = response.body
+
+        if(localStorage) {
+            window.localStorage.setItem('@Samurai:token', token)
+            window.localStorage.setItem('@Samurai:user', JSON.stringify(user))  
+        }
     })
+
+    if(localStorage){
+        cy.visit('/dashboard')
+    }
+    
 })

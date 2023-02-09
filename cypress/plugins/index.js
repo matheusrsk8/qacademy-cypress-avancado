@@ -44,7 +44,7 @@ module.exports = (on, config) => {
         'INNER JOIN public.user_tokens B ' + 
         'ON A.id = B.user_id ' +
         'WHERE A.email = $1 ' +
-        'ORDER BY B.created_at', [email], function(error, result){
+        'ORDER BY A.created_at DESC', [email], function(error, result){
           if (error) {
             throw error
           }
