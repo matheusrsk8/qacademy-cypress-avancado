@@ -1,6 +1,6 @@
 {
     "baseUrl": "https://samuraibs-web-matheus.fly.dev",
-    "apiServer": "https://samuraibs-apigi-matheus.fly.dev",
+    "apiServer": "https://samuraibs-api-matheus.fly.dev",
     "viewportWidth": 1366,
     "viewportHeight": 768,
     "dbConfig": {
