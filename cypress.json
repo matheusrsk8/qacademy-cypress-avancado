@@ -3,6 +3,8 @@
     "apiServer": "https://samuraibs-api-matheus.fly.dev",
     "viewportWidth": 1366,
     "viewportHeight": 768,
+    "responseTimeout": 60000,
+    "defaultCommandTimeout": 30000,
     "dbConfig": {
         "host": "queenie.db.elephantsql.com",
         "user": "owbvunye",
