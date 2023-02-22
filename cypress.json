@@ -1,4 +1,5 @@
 {
+    "projectId": "wh93cw"
     "baseUrl": "https://samuraibs-web-matheus.fly.dev",
     "apiServer": "https://samuraibs-api-matheus.fly.dev",
     "viewportWidth": 1366,
@@ -11,6 +12,5 @@
         "password": "xPPEBsrnEOXMYhnn5_-ZvH_hT8S579Jz",
         "database": "owbvunye",
         "port": 5432
-    },
-    "projectId": "wh93cw"
+    }
 }
