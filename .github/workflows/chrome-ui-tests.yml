@@ -12,7 +12,9 @@ jobs:
   # This workflow contains a single job called "build"
   chrome-ui-tests:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node14.17.6-chrome100-ff98
+    container:
+      image: cypress/browsers:node16.5.0-chrome94-ff93
+      options: --user 1001
     strategy:
       fail-fast: false
       matrix:
@@ -20,7 +22,7 @@ jobs:
         containers: [1]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: Ping API (Fly.io)
         uses: Leocardoso94/is-my-site-up@v1.2
@@ -29,7 +31,7 @@ jobs:
           site: https://samuraibs-api-matheus.fly.dev/
 
       - name: 'UI Tests - Chrome'
-        uses: cypress-io/github-action@v2 # use the explicit version number
+        uses: cypress-io/github-action@v5 # use the explicit version number
         with:
           # we have already installed all dependencies above
           install-command: yarn install
